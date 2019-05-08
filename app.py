@@ -30,28 +30,26 @@ def get_desription(body):
         description = str(body["conversation"]["memory"]["description"]["raw"])
         print(description)
         if description in ["any","all"]:
-            desc = ""
+            return ""
         else:
-            desc = "descr=" + description
+            return description
     else:
-        desc = ""
-    return desc
+        return ""
 
 def get_sort(body):
     if body["conversation"]["memory"]["sort_direction"]["raw"]:
         sort_raw = str(body["conversation"]["memory"]["sort_direction"]["raw"])
         print(sort_raw)
-        sort = "sort=desc" if sort_raw in ["best","most","top"] else "sort=asc"
+        sort = "desc" if sort_raw in ["best","most","top"] else "asc"
+        return sort
     else:
-        sort= ""
-    return sort
+        return ""
 
 def get_count(body):
     if body["conversation"]["memory"]["count"]["raw"]:
-        count = "count=" + str(body["conversation"]["memory"]["count"]["raw"])
+        return str(body["conversation"]["memory"]["count"]["raw"])
     else:
-        count = ""
-    return count
+        return ""
 
 @app.route('/', methods=["GET"])
 def index():
@@ -62,18 +60,16 @@ def sales_analysis():
     body = request.get_json()
 
     print(body)
-
-    count = get_count(body)
-    sort = get_sort(body)
-    desc = get_desription(body)
-    dimension = get_dimension(body)
-
-    print(count,sort,desc, dimension)
-    url = api_url + get_node(dimension) +"?" + count +"&" + sort + '&' + desc
+    params = {
+        "count": get_count(body),
+        "sort" : get_sort(body),
+        "descr" : get_desription(body)
+    }
+    print(params)
+    url = api_url + get_node(get_dimension(body))
     
     print(url)
-
-    result = requests.request("GET", url)
+    result = requests.request("GET", url, params=params)
     return result.content
 
 if __name__ == '__main__':
