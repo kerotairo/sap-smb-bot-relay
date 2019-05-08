@@ -37,7 +37,7 @@ def get_desription(body):
         return ""
 
 def get_sort(body):
-    if body["conversation"]["memory"]["sort_direction"]["raw"]:
+    if "sort_direction" in body["conversation"]["memory"]:
         sort_raw = str(body["conversation"]["memory"]["sort_direction"]["raw"])
         print(sort_raw)
         sort = "desc" if sort_raw in ["best","most","top"] else "asc"
@@ -46,7 +46,7 @@ def get_sort(body):
         return ""
 
 def get_count(body):
-    if body["conversation"]["memory"]["count"]["raw"]:
+    if "count" in body["conversation"]["memory"]:
         return str(body["conversation"]["memory"]["count"]["raw"])
     else:
         return ""
